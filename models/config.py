@@ -33,4 +33,12 @@ class ModelConfig:
             model = os.getenv("GEMINI_MODEL", "gemini-pro")
             if model in ModelConfig.GEMINI_MODELS:
                 return model
+        return None
+
+    @staticmethod
+    def get_final_model() -> Optional[str]:
+        """Get the final model name from environment if provided"""
+        model = os.getenv("FINAL_MODEL")
+        if model and model in ModelConfig.GEMINI_MODELS:
+            return model
         return None 

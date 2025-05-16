@@ -1,51 +1,50 @@
+"""MMMCP Server - Main application"""
+
+import logging
+from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 from typing import Dict
-import os
-from dotenv import load_dotenv
-import logging
-from models import OpenAIModel, GeminiModel
-from models.config import ModelConfig, ModelProvider
+from mmmcp.services import TextGenerationService
 
+# Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
+# Load environment variables
 load_dotenv()
 logger.debug("Environment variables loaded")
 
-mcp = FastMCP("MMMCP")
+mcp = FastMCP("MMMCP", "A MCP server that can run the prompt in multiple LLMs at a time.")
 logger.info("MCP Server initialized")
 
-# Initialize active AI models based on configuration
-models = {}
-active_providers = ModelConfig.get_active_providers()
-logger.info(f"Active providers: {[p.value for p in active_providers]}")
-
-if ModelProvider.OPENAI in active_providers:
-    models['openai'] = OpenAIModel(os.environ.get("OPENAI_API_KEY"))
-if ModelProvider.GEMINI in active_providers:
-    models['gemini'] = GeminiModel(os.environ.get("GOOGLE_API_KEY"))
-
-logger.debug(f"Initialized models: {list(models.keys())}")
+service = TextGenerationService()
 
 @mcp.tool()
 async def generate_text(prompt: str) -> Dict[str, str]:
-    """Generate text using configured AI models"""
-    logger.info(f"Generating text for prompt: {prompt}")
+    """Generate text using configured AI models
     
-    try:
-        results = {}
-        for provider, model in models.items():
-            results[provider] = await model.generate(prompt)
+    Args:
+        prompt: Input prompt
+        
+    Returns:
+        Dictionary mapping provider names to their responses
+    """
+    return await service.generate_text(prompt)
 
-        logger.info("Successfully generated text from active models")
-        return results
-
-    except Exception as e:
-        logger.error(f"Error generating text: {str(e)}", exc_info=True)
-        raise
+@mcp.tool()
+async def summarize_responses(responses: Dict[str, str]) -> Dict[str, str]:
+    """Summarize multiple model responses
+    
+    Args:
+        responses: Dictionary of model responses to summarize
+        
+    Returns:
+        Dictionary containing the summary if final model is configured
+    """
+    return await service.summarize_responses(responses)
 
 if __name__ == "__main__":
     logger.info("Starting MCP server")
