@@ -9,14 +9,33 @@ This is an MCP server that generates text using both OpenAI's GPT-3.5 and Google
 pip install -r requirements.txt
 ```
 
-2. Set up your API keys:
-   - Set OPENAI_API_KEY environment variable for OpenAI
-   - Set GOOGLE_API_KEY environment variable for Google Gemini
+2. Configure environment variables in `.env`:
+```bash
+# Required API Keys
+OPENAI_API_KEY=your_openai_api_key
+GOOGLE_API_KEY=your_google_api_key
+NVIDIA_API_KEY=your_nvidia_api_key  # Optional
 
-3. Configure models (optional):
-   - Set OPENAI_MODEL to specify OpenAI model (default: gpt-3.5-turbo)
-   - Set GEMINI_MODEL to specify Gemini model (default: gemini-pro)
-   - Set FINAL_MODEL to enable response summarization (e.g., gemini-2.0-flash)
+# Model Configuration
+OPENAI_MODEL=gpt-3.5-turbo  # Options: gpt-3.5-turbo, gpt-4
+GEMINI_MODEL=gemini-2.0-flash  # Options: gemini-2.0-flash
+FINAL_MODEL=gemini-2.0-flash  # Optional: Model to use for summarization
+
+# Provider Configuration
+ACTIVE_PROVIDERS=openai,gemini  # Comma-separated list of active providers
+```
+
+### Environment Variables
+
+| Variable | Required | Default | Description | Options |
+|----------|----------|---------|-------------|----------|
+| OPENAI_API_KEY | Yes | - | OpenAI API key | - |
+| GOOGLE_API_KEY | Yes | - | Google API key | - |
+| NVIDIA_API_KEY | No | None | NVIDIA API key | - |
+| OPENAI_MODEL | No | gpt-3.5-turbo | OpenAI model to use | gpt-3.5-turbo, gpt-4 |
+| GEMINI_MODEL | No | gemini-2.0-flash | Gemini model to use | gemini-2.0-flash |
+| FINAL_MODEL | No | None | Model to use for summarization | Any model from OpenAI or Gemini |
+| ACTIVE_PROVIDERS | No | openai,gemini | Active model providers | openai, gemini, nvidia |
 
 ## Running the Server
 
