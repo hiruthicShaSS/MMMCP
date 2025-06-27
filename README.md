@@ -1,4 +1,5 @@
 # Multi-Model MCP Server
+![](https://miro.medium.com/v2/resize:fit:2000/format:webp/1*aSifG1EPEoTogFIhP-DY7g.png)
 
 This is an MCP server that generates text using both OpenAI's GPT-3.5 and Google's Gemini Pro models in parallel.
 
